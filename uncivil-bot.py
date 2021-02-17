@@ -3,7 +3,6 @@ import discord
 import re
 
 token = open("token","r").read()
-print(token)
 
 class MyClient(discord.Client):
 
