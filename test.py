@@ -20,7 +20,7 @@ class MyClient(discord.Client):
             return
 
         if re.search("(?P<url>https?://[^\s]+)", message.content) and message.channel.name == 'server-announcements':
-            channel = discord.utils.get(message.guild.channels, name="test123")
+            channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
             url = re.search("(?P<url>https?://[^\s]+)", message.content).group("url")
             await message.reply("getting chat from " +url)
             chat = chat_downloader.ChatDownloader().get_chat(url)       # create a generator
