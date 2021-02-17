@@ -2,6 +2,9 @@ import chat_downloader
 import discord
 import re
 
+token = open("token","r").read()
+print(token)
+
 class MyClient(discord.Client):
 
     async def on_ready(self):
@@ -22,10 +25,8 @@ class MyClient(discord.Client):
         if re.search("(?P<url>https?://[^\s]+)", message.content) and message.channel.name == 'server-announcements':
             channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
             url = re.search("(?P<url>https?://[^\s]+)", message.content).group("url")
-            await message.reply("getting chat from " +url)
             chat = chat_downloader.ChatDownloader().get_chat(url)       # create a generator
             emoji = '\N{WHITE HEAVY CHECK MARK}'
-            await channel.send("test")
             for text in chat:                        # iterate over messages
                 if text["message"].lower().startswith("@uncivil law") or text["message"].lower().startswith("question"):
                     try :
@@ -42,4 +43,4 @@ class MyClient(discord.Client):
             
 
 client = MyClient()
-client.run('token')
+client.run(token)
