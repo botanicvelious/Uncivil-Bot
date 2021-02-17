@@ -36,10 +36,10 @@ class MyClient(discord.Client):
                             message_id = await channel.send('''```'''+text["author"]["name"]+''' (Member) :```'''+ text["message"])
                         else:
                             message_id = await channel.send('''```'''+text["author"]["name"]+''':```'''+ text["message"])
+                        await message_id.add_reaction(emoji)
                     except KeyError:
-                        message_id = await channel.send('''```'''+text["author"]["name"]+''':```'''+ text["message"])
                         pass
-                    await message_id.add_reaction(emoji)
+                    
             
 
 client = MyClient()
