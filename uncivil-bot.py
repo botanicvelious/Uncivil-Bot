@@ -5,6 +5,22 @@ import re
 token = open("token","r").read()
 print(token)
 
+async def get_messages(message):
+    channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
+    url = re.search("(?P<url>https?://[^\s]+)", message.content).group("url")
+    chat = chat_downloader.ChatDownloader().get_chat(url)       # create a generator
+    emoji = '\N{WHITE HEAVY CHECK MARK}'
+        
+    await channel.send(url)
+        
+    for text in chat:                        # iterate over messages
+        if text["message"].lower().startswith("@uncivil law") or text["message"].lower().startswith("question"):
+            string = chat.format(text)
+            string = string.split('|', 1) 
+            string = string[1].split(':', 1)
+            message_id = await channel.send('''```'''+string[0]+''':```'''+ string[1])
+            await message_id.add_reaction(emoji)
+
 class MyClient(discord.Client):
 
     async def on_ready(self):
@@ -21,26 +37,9 @@ class MyClient(discord.Client):
         # we do not want the bot to reply to itself
         if message.author.id == self.user.id:
             return
-
-        if re.search("(?P<url>https?://[^\s]+)", message.content) and message.channel.name == 'server-announcements':
-            channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
-            url = re.search("(?P<url>https?://[^\s]+)", message.content).group("url")
-            chat = chat_downloader.ChatDownloader().get_chat(url)       # create a generator
-            emoji = '\N{WHITE HEAVY CHECK MARK}'
-            for text in chat:                        # iterate over messages
-                if text["message"].lower().startswith("@uncivil law") or text["message"].lower().startswith("question"):
-                    try :
-                        if "Moderator" in text["author"]["badges"][0]["title"]:
-                            message_id = await channel.send('''```'''+text["author"]["name"]+''' (Moderator) :```'''+ text["message"])
-                        elif "member" in text["author"]["badges"][0]["title"]:
-                            message_id = await channel.send('''```'''+text["author"]["name"]+''' (Member) :```'''+ text["message"])
-                        else:
-                            message_id = await channel.send('''```'''+text["author"]["name"]+''':```'''+ text["message"])
-                    except KeyError:
-                        message_id = await channel.send('''```'''+text["author"]["name"]+''':```'''+ text["message"])
-                        pass
-                    await message_id.add_reaction(emoji)
             
+        if re.search("(?P<url>https?://[^\s]+)", message.content) and message.channel.name == 'server-announcements':
+            client.loop.create_task(get_messages(message))
 
 client = MyClient()
 client.run(token)
