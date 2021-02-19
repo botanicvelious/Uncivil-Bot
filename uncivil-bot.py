@@ -3,7 +3,6 @@ import discord
 import re
 
 token = open("token","r").read()
-print(token)
 
 async def get_messages(message):
     channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
