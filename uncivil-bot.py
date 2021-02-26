@@ -12,13 +12,16 @@ async def get_messages(message):
         
     await channel.send(url)
         
-    for text in chat:                        # iterate over messages
+    async for text in chat:                        # iterate over messages
         if text["message"].lower().startswith("@uncivil law") or text["message"].lower().startswith("question"):
             string = chat.format(text)
             string = string.split('|', 1) 
             string = string[1].split(':', 1)
             message_id = await channel.send('''```'''+string[0]+''':```'''+ string[1])
             await message_id.add_reaction(emoji)
+    
+    await channel.send("Done getting all messages.")
+    
 
 class MyClient(discord.Client):
 
@@ -37,7 +40,7 @@ class MyClient(discord.Client):
         if message.author.id == self.user.id:
             return
             
-        if re.search("(?P<url>https?://[^\s]+)", message.content) and message.channel.name == 'server-announcements':
+        if re.search("(?P<url>https?://[^\s]+)", message.content) and (message.channel.name == 'server-announcements' or message.channel.name == 'bot-for-questions'):
             client.loop.create_task(get_messages(message))
 
 client = MyClient()
