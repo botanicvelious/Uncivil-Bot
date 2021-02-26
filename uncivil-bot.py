@@ -4,13 +4,17 @@ import re
 from pytchat import LiveChatAsync
 import asyncio
 import json
+from functools import partial 
+import os
+import string
+import random
 
 token = open("token","r").read()
 
 class MyClient(discord.Client):
 
-    async def func(self, chatdata):
-        channel = discord.utils.get(data.guild.channels, name="bot-for-questions")
+    async def checkmessagesfunc(self, chatdata, message):
+        channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
         emoji = '\N{WHITE HEAVY CHECK MARK}'
                     
         for c in chatdata.items:
@@ -19,6 +23,35 @@ class MyClient(discord.Client):
                 message_id = await channel.send('''```'''+c.author.name+''':```'''+ c.message)
                 await message_id.add_reaction(emoji)
             await chatdata.tick_async()
+
+    async def dumpchat(self, message):
+        res = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 10)) 
+        try: 
+            channel = message.channel
+            url = re.search("(?P<url>https?://[^\s]+)", message.content).group("url")
+                    
+            await channel.send(f'Getting char for <{url}>')
+            chat = chat_downloader.ChatDownloader().get_chat(url)       # create a generator
+            
+            if os.path.exists(res):
+                os.remove(res)
+            stringprint= []
+            for message in chat:                        # iterate over messages
+                stringprint.append(chat.format(message)+"\n")
+            with open(res, "w", encoding = "UTF-8") as file:
+                file.writelines(stringprint) 
+                file.close()
+            embed = discord.Embed()
+            with open(res, "rb") as file:
+                await channel.send("Chatlog file:", file=discord.File(file, "result.txt"))
+                file.close()
+            if os.path.exists(res):
+                os.remove(res)
+                
+        except Exception as e:
+            if os.path.exists(res):
+                os.remove(res)            
+            await channel.send(e)
 
     async def on_ready(self):
         print('Logged in as')
@@ -35,10 +68,11 @@ class MyClient(discord.Client):
             channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
             url = re.search("(?P<url>https?://[^\s]+)", message.content).group("url")
             urlstr = url.split("=",1)
+            urlstr = urlstr[1].split("&",1)
                     
             await channel.send(url)
             
-            livechat = LiveChatAsync(urlstr[1], callback = self.func, interruptable=False, force_replay=True)
+            livechat = LiveChatAsync(urlstr[0], callback=(lambda chatdata:self.checkmessagesfunc(chatdata, message)), interruptable=False, force_replay=True)
             while livechat.is_alive():
                 await asyncio.sleep(.1)               
                 
@@ -47,15 +81,17 @@ class MyClient(discord.Client):
             
 
     async def on_message(self, message):
-    
-        global data 
-        data = message
         
         # we do not want the bot to reply to itself
         if message.author.id == self.user.id:
             return
+        
+        #check for !getchat
+        if re.search("(?P<url>https?://[^\s]+)", message.content) and message.content.lower().startswith("!getchat"):
+            self.bg_task = self.loop.create_task(self.dumpchat(message))
             
-        if re.search("(?P<url>https?://[^\s]+)", message.content) and (message.channel.name == 'bot-for-questions' or message.channel.name == 'server-announcements'):
+        #get questions
+        elif re.search("(?P<url>https?://[^\s]+)", message.content) and (message.channel.name == 'bot-for-questions' or message.channel.name == 'server-announcements'):
             self.bg_task = self.loop.create_task(self.background_task(message))
 
 client = MyClient()
