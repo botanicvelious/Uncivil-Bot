@@ -34,12 +34,11 @@ class MyClient(discord.Client):
         try: 
             channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
             url = re.search("(?P<url>https?://[^\s]+)", message.content).group("url")
-            chat = chat_downloader.ChatDownloader().get_chat(url)       # create a generator
-            emoji = '\N{WHITE HEAVY CHECK MARK}'
+            urlstr = url.split("=",1)
                     
             await channel.send(url)
             
-            livechat = LiveChatAsync("frVrQ6NthAs", callback = self.func, interruptable=False)
+            livechat = LiveChatAsync(urlstr[1], callback = self.func, interruptable=False, force_replay=True)
             while livechat.is_alive():
                 await asyncio.sleep(.1)               
                 
