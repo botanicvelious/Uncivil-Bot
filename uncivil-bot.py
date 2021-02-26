@@ -30,7 +30,7 @@ class MyClient(discord.Client):
             channel = message.channel
             url = re.search("(?P<url>https?://[^\s]+)", message.content).group("url")
                     
-            await channel.send(f'Getting char for <{url}>')
+            await channel.send(f'Getting chat for <{url}>')
             chat = chat_downloader.ChatDownloader().get_chat(url)       # create a generator
             
             if os.path.exists(res):
