@@ -19,6 +19,8 @@ async def get_messages(message):
             string = string[1].split(':', 1)
             message_id = await channel.send('''```'''+string[0]+''':```'''+ string[1])
             await message_id.add_reaction(emoji)
+    await channel.send("Done getting all messages.")
+
 
 class MyClient(discord.Client):
 
@@ -38,7 +40,7 @@ class MyClient(discord.Client):
             return
             
         if re.search("(?P<url>https?://[^\s]+)", message.content) and message.channel.name == 'server-announcements':
-            client.loop.create_task(get_messages(message))
+            await get_messages(message)
 
 client = MyClient()
 client.run(token)
