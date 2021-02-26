@@ -1,14 +1,24 @@
 import chat_downloader 
 import discord
 import re
+from pytchat import LiveChatAsync
 import asyncio
+import json
 
 token = open("token","r").read()
 
 class MyClient(discord.Client):
 
-    def __aiter__(self):
-        return self
+    async def func(self, chatdata):
+        channel = discord.utils.get(data.guild.channels, name="bot-for-questions")
+        emoji = '\N{WHITE HEAVY CHECK MARK}'
+                    
+        for c in chatdata.items:
+            print(f"{c.datetime} [{c.author.name}]-{c.message} {c.amountString} ")
+            if c.message.lower().startswith("@uncivil law") or c.message.lower().startswith("question"):
+                message_id = await channel.send('''```'''+c.author.name+''':```'''+ c.message)
+                await message_id.add_reaction(emoji)
+            await chatdata.tick_async()
 
     async def on_ready(self):
         print('Logged in as')
@@ -26,22 +36,22 @@ class MyClient(discord.Client):
             url = re.search("(?P<url>https?://[^\s]+)", message.content).group("url")
             chat = chat_downloader.ChatDownloader().get_chat(url)       # create a generator
             emoji = '\N{WHITE HEAVY CHECK MARK}'
-                
+                    
             await channel.send(url)
+            
+            livechat = LiveChatAsync("frVrQ6NthAs", callback = self.func, interruptable=False)
+            while livechat.is_alive():
+                await asyncio.sleep(.1)               
                 
-            async for text in chat:                        # iterate over messages
-                if text["message"].lower().startswith("@uncivil law") or text["message"].lower().startswith("question"):
-                    string = chat.format(text)
-                    string = string.split('|', 1) 
-                    string = string[1].split(':', 1)
-                    message_id = await channel.send('''```'''+string[0]+''':```'''+ string[1])
-                    await message_id.add_reaction(emoji)
-            await channel.send("Done getting all messages.")
         except Exception as e:
             await channel.send(e)
             
 
     async def on_message(self, message):
+    
+        global data 
+        data = message
+        
         # we do not want the bot to reply to itself
         if message.author.id == self.user.id:
             return
