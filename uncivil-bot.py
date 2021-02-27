@@ -16,13 +16,15 @@ class MyClient(discord.Client):
     async def checkmessagesfunc(self, chatdata, message):
         channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
         emoji = '\N{WHITE HEAVY CHECK MARK}'
-                    
+                            
         for c in chatdata.items:
             print(f"{c.datetime} [{c.author.name}]-{c.message} {c.amountString} ")
             if c.message.lower().startswith("@uncivil law") or c.message.lower().startswith("question"):
                 message_id = await channel.send('''```'''+c.author.name+''':```'''+ c.message)
                 await message_id.add_reaction(emoji)
-            await chatdata.tick_async()
+                await chatdata.tick_async()
+            else:
+                await chatdata.tick_async()
 
     async def dumpchat(self, message):
         res = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 10)) 
@@ -72,10 +74,11 @@ class MyClient(discord.Client):
                     
             await channel.send(url)
             
-            livechat = LiveChatAsync(urlstr[0], callback=(lambda chatdata:self.checkmessagesfunc(chatdata, message)), interruptable=False, force_replay=True)
+            livechat = LiveChatAsync(urlstr[0], callback=(lambda chatdata:self.checkmessagesfunc(chatdata, message)), interruptable=False)
             while livechat.is_alive():
-                await asyncio.sleep(.1)               
+                await asyncio.sleep(1)               
                 
+            await channel.send("Done with chat!")
         except Exception as e:
             await channel.send(e)
             
