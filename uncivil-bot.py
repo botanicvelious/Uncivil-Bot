@@ -72,7 +72,7 @@ class MyClient(discord.Client):
             urlstr = url.split("=",1)
             urlstr = urlstr[1].split("&",1)
                     
-            await channel.send(url)
+            await channel.send(f'Parsing chat for <{url}>')
             
             livechat = LiveChatAsync(urlstr[0], callback=(lambda chatdata:self.checkmessagesfunc(chatdata, message)), interruptable=False)
             while livechat.is_alive():
