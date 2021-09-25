@@ -78,7 +78,7 @@ class MyClient(discord.Client):
             while livechat.is_alive():
                 await asyncio.sleep(1)               
                 
-            await channel.purge(limit=9000)
+            await channel.purge(limit=9000, oldest_first=True, bulk=False)
             await channel.send(f'Done parsing chat for <{url}> so channel cleared!')
         except Exception as e:
             await channel.send(e)
