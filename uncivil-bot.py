@@ -79,6 +79,7 @@ class MyClient(discord.Client):
                 await asyncio.sleep(1)               
                 
             await ctx.channel.purge(500)
+            await channel.send("Channel Cleared!")
         except Exception as e:
             await channel.send(e)
             
