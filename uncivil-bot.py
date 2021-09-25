@@ -78,7 +78,7 @@ class MyClient(discord.Client):
             while livechat.is_alive():
                 await asyncio.sleep(1)               
                 
-            await channel.purge(500)
+            await channel.purge(limit=9000)
             await channel.send("Channel Cleared!")
         except Exception as e:
             await channel.send(e)
