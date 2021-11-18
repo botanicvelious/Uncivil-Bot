@@ -14,6 +14,7 @@ token = open("token","r").read()
 class MyClient(discord.Client):
     async def checkmessagesfunc(self, chatdata, message):
         channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
+        superchatchannel = discord.utils.get(message.guild.channels, name="bot-for-superchats")
         emoji = '\N{WHITE HEAVY CHECK MARK}'
                             
         for c in chatdata.items:
@@ -21,7 +22,7 @@ class MyClient(discord.Client):
             if c.type == "superChat":
                 embedVar = discord.Embed(title="SUPERCHAT "+c.amountString, description=c.author.name, color=0x00ff00)
                 embedVar.add_field(name="Message", value=c.message, inline=False)
-                await channel.send(embed=embedVar)
+                await superchatchannel.send(embed=embedVar)
             elif c.message.lower().startswith("@uncivil law") or c.message.lower().startswith("question"):
                 message_id = await channel.send('''```'''+c.author.name+''':```'''+ c.message)
                 await message_id.add_reaction(emoji)
