@@ -72,6 +72,8 @@ class MyClient(discord.Client):
     async def background_task(self, message):
         try: 
             channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
+            superchatchannel = discord.utils.get(message.guild.channels, name="bot-for-superchats")
+            
             url = re.search("(?P<url>https?://[^\s]+)", message.content).group("url")
             urlstr = url.split("=",1)
             urlstr = urlstr[1].split("&",1)
@@ -84,6 +86,8 @@ class MyClient(discord.Client):
                 
             await channel.purge(limit=9000, bulk=False)
             await channel.send(f'Done parsing chat for <{url}> so channel cleared!')
+            await superchatchannel.purge(limit=9000, bulk=False)
+            await superchatchannel.send(f'Done parsing chat for <{url}> so channel cleared!')
         except Exception as e:
             await channel.send(e)
             
