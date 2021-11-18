@@ -18,7 +18,7 @@ class MyClient(discord.Client):
         emoji = '\N{WHITE HEAVY CHECK MARK}'
                             
         for c in chatdata.items:
-            #print(f"{c.datetime} [{c.author.name}]-{c.message} {c.amountString} ")
+            print(f"{c.datetime} [{c.author.name}]-{c.message} {c.type} {c.amountString} ")
             if c.type == "superChat":
                 message_id = await channel.send('''**```diff \n SUPERCHAT: '''+c.author.name+''':```**'''+ c.message)
                 await message_id.add_reaction(emoji)
