@@ -19,7 +19,11 @@ class MyClient(discord.Client):
                             
         for c in chatdata.items:
             #print(f"{c.datetime} [{c.author.name}]-{c.message} {c.amountString} ")
-            if c.message.lower().startswith("@uncivil law") or c.message.lower().startswith("question"):
+            if c.type == "superChat":
+                message_id = await channel.send('''**```diff \n SUPERCHAT: '''+c.author.name+''':```**'''+ c.message)
+                await message_id.add_reaction(emoji)
+                await chatdata.tick_async()
+            elif c.message.lower().startswith("@uncivil law") or c.message.lower().startswith("question"):
                 message_id = await channel.send('''```'''+c.author.name+''':```'''+ c.message)
                 await message_id.add_reaction(emoji)
                 await chatdata.tick_async()
