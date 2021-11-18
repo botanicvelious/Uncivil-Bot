@@ -12,17 +12,16 @@ import random
 token = open("token","r").read()
 
 class MyClient(discord.Client):
-
     async def checkmessagesfunc(self, chatdata, message):
         channel = discord.utils.get(message.guild.channels, name="bot-for-questions")
         emoji = '\N{WHITE HEAVY CHECK MARK}'
                             
         for c in chatdata.items:
-            print(f"{c.datetime} [{c.author.name}]-{c.message} {c.type} {c.amountString} ")
-            if c.type == "superChat":
-                message_id = await channel.send('''**```diff \n SUPERCHAT: '''+c.author.name+''':```**'''+ c.message)
-                await message_id.add_reaction(emoji)
-                await chatdata.tick_async()
+            #print(f"{c.datetime} [{c.author.name}]-{c.message} {c.type} {c.amountString} {c.type}")
+            if c.type = "superChat":
+                embedVar = discord.Embed(title="SUPERCHAT "+c.amountString, description=c.author.name, color=0x00ff00)
+                embedVar.add_field(name="Message", value=c.message, inline=False)
+                await channel.send(embed=embedVar)
             elif c.message.lower().startswith("@uncivil law") or c.message.lower().startswith("question"):
                 message_id = await channel.send('''```'''+c.author.name+''':```'''+ c.message)
                 await message_id.add_reaction(emoji)
