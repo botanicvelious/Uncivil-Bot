@@ -20,8 +20,8 @@ class MyClient(discord.Client):
         for c in chatdata.items:
             #print(f"{c.datetime} [{c.author.name}]-{c.message} {c.type} {c.amountString} {c.type}")
             if c.type == "superChat":
-                embedVar = discord.Embed(title="SUPERCHAT "+c.amountString, description=c.author.name, color=0x00ff00)
-                embedVar.add_field(name="Message", value=c.message, inline=False)
+                embedVar = discord.Embed(title="SUPERCHAT "+c.amountString, description="-"+c.author.name, color=0x00ff00)
+                embedVar.add_field(name="Message", value="-"+c.message, inline=False)
                 await superchatchannel.send(embed=embedVar)
             elif c.message.lower().startswith("@uncivil law") or c.message.lower().startswith("question"):
                 message_id = await channel.send('''```'''+c.author.name+''':```'''+ c.message)
