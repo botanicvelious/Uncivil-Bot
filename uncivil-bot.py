@@ -1,13 +1,14 @@
 import chat_downloader
 import discord
 import re
-from pytchat import LiveChatAsync
 import asyncio
 import json
 from functools import partial
 import os
 import string
 import random
+from pytchat.core_async.livechat import LiveChatAsync
+import traceback
 
 token = open("token", "r").read()
 
@@ -92,15 +93,17 @@ class MyClient(discord.Client):
             await channel.send(f'Parsing chat for <{url}>')
 
             livechat = LiveChatAsync(urlstr[0], callback=(
-                lambda chatdata: self.checkmessagesfunc(chatdata, message)), interruptable=False)
+                lambda chatdata: self.checkmessagesfunc(chatdata, message)))
             while livechat.is_alive():
                 await asyncio.sleep(1)
 
-            await channel.purge(limit=9000, bulk=False)
+            #await channel.purge(limit=9000, bulk=False)
             await channel.send(f'Done parsing chat for <{url}> so channel cleared!')
             await superchatchannel.purge(limit=9000, bulk=False)
             await superchatchannel.send(f'Done parsing chat for <{url}> so channel cleared!')
+
         except Exception as e:
+            traceback.print_exc()
             await channel.send(e)
 
     async def on_message(self, message):
