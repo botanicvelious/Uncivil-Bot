@@ -99,7 +99,7 @@ class MyClient(discord.Client):
 
             #await channel.purge(limit=9000, bulk=False)
             await channel.send(f'Done parsing chat for <{url}> so channel cleared!')
-            await superchatchannel.purge(limit=9000, bulk=False)
+            #await superchatchannel.purge(limit=9000, bulk=False)
             await superchatchannel.send(f'Done parsing chat for <{url}> so channel cleared!')
 
         except Exception as e:
