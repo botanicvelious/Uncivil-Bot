@@ -155,11 +155,11 @@ class MyClient(discord.Client):
             return
 
         # check for !getchat
-        if re.match(r"((http|https)\:\/\/(www.youtube.com\/watch\?v=|youtube.com\/watch\?v=))", message.content) and message.content.lower().startswith("!getchat"):
+        if re.search(r"\byoutube|youtu\b", message.content) and message.content.lower().startswith("!getchat"):
             self.bg_task = self.loop.create_task(self.dumpchat(message))
 
         # get questions
-        elif re.match(r"((http|https)\:\/\/(www.youtube.com\/watch\?v=|youtube.com\/watch\?v=))", message.content) and (message.channel.name == 'bot-for-questions' or message.channel.name == 'server-announcements'):
+        if re.search(r"\byoutube|youtu\b", message.content) and (message.channel.name == 'bot-for-questions' or message.channel.name == 'server-announcements'):
             self.bg_task = self.loop.create_task(self.background_task(message))
 
 
